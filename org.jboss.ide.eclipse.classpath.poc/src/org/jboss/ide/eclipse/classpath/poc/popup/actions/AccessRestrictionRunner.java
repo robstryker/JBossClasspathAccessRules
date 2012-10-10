@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IAccessRule;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -63,6 +64,9 @@ public class AccessRestrictionRunner {
 			
 			IClasspathEntry[] raw = jproject.getRawClasspath();
 			IClasspathEntry[] updated = new IClasspathEntry[raw.length];
+			monitor.beginTask("Analyzing classpath entries...", 300+(raw.length * 100));
+			gavModel.load(new SubProgressMonitor(monitor, 300));
+			monitor.setTaskName("Analyzing classpath entries...");
 			for( int i = 0; i < raw.length; i++ ) {
 				updated[i] = getUpdatedEntry(raw[i], gavModel, jproject);
 				if( updated[i] != raw[i] )
@@ -72,6 +76,7 @@ public class AccessRestrictionRunner {
 					// and then there's a list of other unchanged jars
 					unchangedEntries.add(raw[i]);
 				}
+				monitor.worked(100);
 			}
 			updatedRawEntries = updated;
 		} catch(JavaModelException jme) {
@@ -80,13 +85,16 @@ public class AccessRestrictionRunner {
 	}
 	
 	public void finish(IProgressMonitor monitor) {
+		if( jproject == null || updatedRawEntries == null )
+			return;
+		monitor.beginTask("Updating classpath entries with new access rules", 100 + (containerEntriesToModify.keySet().size()*100));
 		// finally set the official Classpath for the project to the new updated ones
 		try {
 			jproject.setRawClasspath(updatedRawEntries, new NullProgressMonitor());
 		} catch(JavaModelException jme) {
 			jme.printStackTrace();
 		}
-		
+		monitor.worked(100);
 		Set<IPath> containerPaths = containerEntriesToModify.keySet();
 		for(Iterator<IPath> i = containerPaths.iterator(); i.hasNext(); ) {
 			IPath containerPath = i.next();
@@ -98,7 +106,9 @@ public class AccessRestrictionRunner {
 					ce.printStackTrace();
 				}
 			}
+			monitor.worked(100);
 		}
+		monitor.done();
 	}
 	
 	private IClasspathEntry getUpdatedEntry(IClasspathEntry entry, GavModel gavModel, IJavaProject jproject) {

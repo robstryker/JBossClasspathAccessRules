@@ -219,7 +219,7 @@ public class AccessRestrictionPreviewPage extends WizardPage implements IPageCha
 					selectedRuntime = wiz.getSelectedRuntime();
 					runner = new AccessRestrictionRunner(jp, selectedRuntime);
 					// Long running task
-					runner.begin(new NullProgressMonitor());
+					runner.begin(monitor);
 				}
 				Display.getDefault().asyncExec(new Runnable() { public void run() { 
 					refreshViewer();

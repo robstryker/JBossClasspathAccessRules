@@ -16,6 +16,7 @@ public class AccessRestrictionWizard extends Wizard {
 	private AccessRestrictionPreviewPage secondPage;
 	public AccessRestrictionWizard(IJavaProject jproject) {
 		this.jproject = jproject;
+		setNeedsProgressMonitor(true);
 	}
     public void addPages() {
     	firstPage = new ChooseRuntimePage(jproject); 

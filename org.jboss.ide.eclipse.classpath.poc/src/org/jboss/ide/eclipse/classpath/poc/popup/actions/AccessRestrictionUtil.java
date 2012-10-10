@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IAccessRule;
 import org.eclipse.jdt.core.JavaCore;
@@ -49,17 +51,17 @@ public class AccessRestrictionUtil {
 		public GavModel(IRuntime runtime) {
 			this.runtime = runtime;
 		}
-		private void load() {
+		public void load(IProgressMonitor monitor) {
 			model = new HashMap<String, HashMap<String, HashMap<String, Module>>>();
 			File f2 = runtime.getLocation().append("modules").toFile();
 			try {
 				List<BaseModule> list = ModulesInformationBuilder.getInstance(f2).build();
+				monitor.beginTask("Analyzing JBoss Runtime Modules", 200+(100*list.size()));
+				monitor.setTaskName("Analyzing JBoss Runtime Modules");
+				monitor.worked(200);
 				for( int i = 0; i < list.size(); i++ ) {
 					BaseModule o = list.get(i);
 					String name = o.getName();
-					if( name.contains("xb")) {
-						System.out.println("BREAK");
-					}
 					if( o instanceof Module ) {
 						List<Jar> jars = ((Module)o).getResources();
 						for( int j = 0; j < jars.size(); j++ ) {
@@ -84,11 +86,13 @@ public class AccessRestrictionUtil {
 							}
 						}
 					}
+					monitor.worked(100);
 				}
 			} catch(BuildException be) {
 				// TODO LOG
 				be.printStackTrace();
 			}
+			monitor.done();
 		}
 		
 		/**
@@ -102,7 +106,7 @@ public class AccessRestrictionUtil {
 		public IAccessRule[] getAccessRules(String group, String artifact, String version, boolean fuzzyVersion) {
 			// Force load
 			if( model == null )
-				load();
+				load(new NullProgressMonitor());
 			
 			HashMap<String, HashMap<String, Module>> artifactToVersion = model.get(group);
 			if( artifactToVersion != null ) {
