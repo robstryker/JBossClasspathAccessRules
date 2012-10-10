@@ -47,6 +47,7 @@ public class AccessRestrictionPreviewPage extends WizardPage implements IPageCha
 	public AccessRestrictionPreviewPage(IJavaProject jp) {
 		super("");
 		this.jp = jp;
+		setPageComplete(false);
 	}
 	@Override
 	public void createControl(Composite parent) {
@@ -223,6 +224,8 @@ public class AccessRestrictionPreviewPage extends WizardPage implements IPageCha
 				}
 				Display.getDefault().asyncExec(new Runnable() { public void run() { 
 					refreshViewer();
+					setPageComplete(true);
+					getContainer().updateButtons();
 				}});
 			}
 		};
