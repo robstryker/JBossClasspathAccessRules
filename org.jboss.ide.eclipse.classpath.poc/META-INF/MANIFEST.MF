@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Poc
+Bundle-SymbolicName: org.jboss.ide.eclipse.classpath.poc; singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.jboss.ide.eclipse.classpath.poc.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core;bundle-version="3.8.2",
+ org.eclipse.wst.server.core;bundle-version="1.4.0",
+ org.eclipse.jst.common.project.facet.core;bundle-version="1.4.201",
+ org.eclipse.jst.common.project.facet.ui;bundle-version="1.4.200",
+ org.eclipse.wst.common.project.facet.core;bundle-version="1.4.300",
+ org.eclipse.jdt.ui;bundle-version="3.8.1",
+ org.eclipse.wst.server.ui;bundle-version="1.4.1",
+ org.eclipse.jdt.debug.ui;bundle-version="3.6.100",
+ org.eclipse.ui.ide;bundle-version="3.8.1"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: jboss-modules-poc-0.0.1-SNAPSHOT.jar,
+ .

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.jboss.ide.eclipse.classpath.poc.popup.actions.AccessRestrictionHandler"
+            id="org.jboss.ide.eclipse.classpath.poc.action"
+            name="Update JBoss Access Restrictions">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?before=additions">
+          <command
+                  commandId="org.jboss.ide.eclipse.classpath.poc.action"
+                  label="Update JBoss Access Restrictions"
+                  style="push">
+          </command>
+      </menuContribution>
+   </extension>
+</plugin>
